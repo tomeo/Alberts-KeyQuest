@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert's KeyQuest</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #87CEEB; /* Light blue for adventure theme */
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        #game-container {
+            width: 800px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2E7D32; /* Dark green jungle theme */
+            border: 5px solid #000; /* Adds retro-style border */
+            border-radius: 20px; /* Adjust for smooth rounded corners */
+            overflow: hidden; /* Ensures content inside doesn't overflow */
+        }
+
+
+        /* Ensuring font is applied */
+        .hidden-font {
+            font-family: "Press Start 2P", cursive;
+            position: absolute;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="hidden-font">Loading font...</div> <!-- Forces the browser to load the font -->
+    <div id="game-container"></div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
