@@ -23,7 +23,7 @@ export default class Level1Scene extends Phaser.Scene {
             repeat: 0
         });
 
-        // 🟢 Now we create the sprite and play the idle animation
+        // 🟢 Create the sprite and play the idle animation
         let albert = this.add.sprite(width / 2, height - 100, 'albert');
         albert.play('idle');  // Play idle AFTER animations are created
 
@@ -36,13 +36,17 @@ export default class Level1Scene extends Phaser.Scene {
             fill: "#FFD700"
         }).setOrigin(0.5);
 
-        const instructionText = this.add.text(width / 2, height * 0.4, "Type the letter to continue...", {
+        const instructionText = this.add.text(width / 2, height * 0.4, "Type the letter or number to continue...", {
             fontFamily: '"Press Start 2P", cursive',
             fontSize: "16px",
             fill: "#fff"
         }).setOrigin(0.5);
 
-        const possibleChallenges = ["A", "B", "C", "D", "E", "F", "G"];
+        // 🟢 Generate A-Z, a-z, and 0-9 as possible challenges
+        const uppercaseLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));  // A-Z
+        const lowercaseLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i));  // a-z
+        const numbers = Array.from({ length: 10 }, (_, i) => i.toString());  // 0-9
+        const possibleChallenges = [...uppercaseLetters, ...lowercaseLetters, ...numbers];
 
         const generateChallenge = () => {
             let newChallenge;
@@ -59,7 +63,8 @@ export default class Level1Scene extends Phaser.Scene {
 
         this.input.keyboard.on("keydown", (event) => {
             console.log("Key pressed:", event.key);
-            if (event.key.toUpperCase() === currentChallenge) {
+            // 🟢 Case-insensitive check for letters, exact check for numbers
+            if (event.key.toUpperCase() === currentChallenge.toUpperCase()) {
                 albert.play('cheer');
                 albert.once('animationcomplete', () => {
                     albert.play('idle');
