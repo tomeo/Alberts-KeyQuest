@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { addOptions } from "../options.js";
 
 export default class Level1Scene extends Phaser.Scene {
     constructor() {
@@ -22,6 +23,8 @@ export default class Level1Scene extends Phaser.Scene {
             repeat: 0
         });
 
+        addOptions(this);
+
         let albert = this.add.sprite(width / 2, height - 100, 'albert');
         albert.play('idle');
 
@@ -32,11 +35,11 @@ export default class Level1Scene extends Phaser.Scene {
 
         const challengeText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
-            fontSize: `${8}rem`,
+            fontSize: `${12}rem`,
             fill: "#FFD700"
         }).setOrigin(0.5);
 
-        const instructionText = this.add.text(width / 2, height * 0.1, "Type the letter or number to continue...", {
+        const instructionText = this.add.text(width / 2, height * 0.1, "Press the key", {
             fontFamily: '"Press Start 2P", cursive',
             fontSize: `${1}rem`,
             fill: "#fff"
@@ -60,7 +63,7 @@ export default class Level1Scene extends Phaser.Scene {
 
         const setFemaleVoice = () => {
             const voices = speechSynthesis.getVoices();
-            femaleVoice = voices.find(voice => voice.name.includes("Female") || voice.name.includes("female") || voice.name.includes("Google UK English Female"));
+            femaleVoice = voices.find(voice => voice.name.includes("Female") || voice.name.includes("Google UK English Female"));
         };
 
         if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -81,7 +84,7 @@ export default class Level1Scene extends Phaser.Scene {
                 isSpeaking = false;
                 if (callback) callback();
             };
-            speechSynthesis.speak(utterance);
+            setTimeout(() => speechSynthesis.speak(utterance), 100);  // 🟢 Add a small delay to ensure voices are ready
         };
 
         const handleCorrectAnswer = () => {

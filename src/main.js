@@ -7,7 +7,11 @@ const config = {
     width: 800,
     height: 600,
     parent: "game-container",
-    scene: [TitleScene, Level1Scene]
+    scene: [TitleScene, Level1Scene],
+    scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    }
 };
 
 new Phaser.Game(config);
