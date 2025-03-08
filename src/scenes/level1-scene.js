@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
+import GlowFilterPipelinePlugin from 'phaser3-rex-plugins/plugins/glowfilterpipeline-plugin.js';
 import { addOptions } from "../options.js";
 
 export default class Level1Scene extends Phaser.Scene {
@@ -84,7 +86,7 @@ export default class Level1Scene extends Phaser.Scene {
                 isSpeaking = false;
                 if (callback) callback();
             };
-            setTimeout(() => speechSynthesis.speak(utterance), 100);  // 🟢 Add a small delay to ensure voices are ready
+            setTimeout(() => speechSynthesis.speak(utterance), 100);
         };
 
         const handleCorrectAnswer = () => {
@@ -93,6 +95,20 @@ export default class Level1Scene extends Phaser.Scene {
             } else {
                 speak(`Yes, that is the letter ${currentChallenge}`, () => generateChallenge());
             }
+
+            albert.setPipeline('GlowFilter');
+            setTimeout(() => albert.resetPipeline(), 500);
+
+            this.cameras.main.shake(200, 0.01);
+
+            const bubble = this.add.text(albert.x, albert.y - 120, "Great!", {
+                fontFamily: '"Press Start 2P", cursive',
+                fontSize: "1.5rem",
+                fill: "#fff",
+                backgroundColor: "#000",
+                padding: { x: 10, y: 5 }
+            }).setOrigin(0.5);
+            setTimeout(() => bubble.destroy(), 800);
         };
 
         generateChallenge();
