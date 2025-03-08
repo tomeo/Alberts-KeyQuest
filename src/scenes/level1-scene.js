@@ -155,9 +155,25 @@ export default class Level1Scene extends Phaser.Scene {
         
             albert.setPipeline('GlowFilter');
             setTimeout(() => albert.resetPipeline(), 500);
-        
-            this.cameras.main.shake(200, 0.01);
         };
+        
+        generateChallenge();
+        
+        this.input.keyboard.on("keydown", (event) => {
+            if (isSpeaking) return;
+        
+            if (event.key.toUpperCase() === currentChallenge.toUpperCase()) {
+                albert.play('cheer');
+                handleCorrectAnswer();
+                albert.once('animationcomplete', () => {
+                    albert.play('idle');
+                });
+            } else {
+                albert.play('typing');
+                this.cameras.main.shake(200, 0.01);  // 🔄 Shake Only on Wrong Answer
+                albert.once('animationcomplete', () => albert.play('idle'));
+            }
+        });
 
         generateChallenge();
 
