@@ -14,12 +14,4 @@ export const addOptions = (scene) => {
             scene.scale.startFullscreen();
         }
     });
-
-    scene.input.keyboard.on("keydown-F", () => {
-        if (scene.scale.isFullscreen) {
-            scene.scale.stopFullscreen();
-        } else {
-            scene.scale.startFullscreen();
-        }
-    });
 };
