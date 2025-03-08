@@ -35,6 +35,20 @@ export default class Level1Scene extends Phaser.Scene {
         let isSpeaking = false;
         let femaleVoice = null;
 
+        const iconMap = {
+            A: "🚑", B: "🏀", C: "🐈", D: "🐕", E: "🦅", F: "🐠", G: "🍇",
+            H: "🏠", I: "🧊", J: "🤹", K: "🪁", L: "🦁", M: "🍈", N: "🌙",
+            O: "🐙", P: "🍍", Q: "👑", R: "🤖", S: "🐍", T: "🌳", U: "☂️",
+            V: "🎻", W: "🚶", X: "❌", Y: "🧶", Z: "🦓"
+        };
+
+        const nameMap = {
+            A: "ambulance", B: "basketball", C: "cat", D: "dog", E: "eagle", F: "fish", G: "grapes",
+            H: "house", I: "ice", J: "juggling", K: "kite", L: "lion", M: "melon", N: "night",
+            O: "octopus", P: "pineapple", Q: "queen", R: "robot", S: "snake", T: "tree", U: "umbrella",
+            V: "violin", W: "walking", X: "cross", Y: "yarn", Z: "zebra"
+        };
+
         const challengeText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
             fontSize: `${12}rem`,
@@ -60,6 +74,7 @@ export default class Level1Scene extends Phaser.Scene {
 
             lastChallenge = newChallenge;
             currentChallenge = newChallenge;
+
             challengeText.setText(currentChallenge);
         };
 
@@ -90,25 +105,58 @@ export default class Level1Scene extends Phaser.Scene {
         };
 
         const handleCorrectAnswer = () => {
-            if (!isNaN(currentChallenge)) {
-                speak(`Yes, that is the number ${currentChallenge}`, () => generateChallenge());
-            } else {
-                speak(`Yes, that is the letter ${currentChallenge}`, () => generateChallenge());
+            let iconText, wordText;
+        
+            if (iconMap[currentChallenge.toUpperCase()]) {
+                challengeText.setText("");  
+        
+                iconText = this.add.text(challengeText.x, challengeText.y, iconMap[currentChallenge.toUpperCase()], {
+                    fontFamily: '"Roboto", sans-serif',
+                    fontSize: "8rem"
+                }).setOrigin(0.5);
+        
+                if (nameMap[currentChallenge.toUpperCase()]) {
+                    wordText = this.add.text(challengeText.x, challengeText.y + 100, nameMap[currentChallenge.toUpperCase()], {
+                        fontFamily: '"Press Start 2P", cursive',
+                        fontSize: "1.5rem",
+                        fill: "#fff"
+                    }).setOrigin(0.5);
+                }
             }
-
-            albert.setPipeline('GlowFilter');
-            setTimeout(() => albert.resetPipeline(), 500);
-
-            this.cameras.main.shake(200, 0.01);
-
-            const bubble = this.add.text(albert.x, albert.y - 120, "Great!", {
+        
+            const greatText = this.add.text(albert.x, albert.y - 200, "Great!", {
                 fontFamily: '"Press Start 2P", cursive',
                 fontSize: "1.5rem",
                 fill: "#fff",
                 backgroundColor: "#000",
                 padding: { x: 10, y: 5 }
             }).setOrigin(0.5);
-            setTimeout(() => bubble.destroy(), 800);
+            setTimeout(() => greatText.destroy(), 800);
+        
+            if (nameMap[currentChallenge.toUpperCase()]) {
+                speak(`Yes, that is the letter ${currentChallenge.toUpperCase()}`, () => {
+                    setTimeout(() => {
+                        speak(`${currentChallenge.toUpperCase()} is for ${nameMap[currentChallenge.toUpperCase()]}`, () => {
+                            challengeText.setText(currentChallenge);  
+                            if (iconText) iconText.destroy();
+                            if (wordText) wordText.destroy();
+                            generateChallenge();
+                        });
+                    }, 50);
+                });
+            } else {
+                speak(`Yes, that is the number ${currentChallenge}`, () => {
+                    challengeText.setText(currentChallenge);  
+                    if (iconText) iconText.destroy();
+                    if (wordText) wordText.destroy();
+                    generateChallenge();
+                });
+            }
+        
+            albert.setPipeline('GlowFilter');
+            setTimeout(() => albert.resetPipeline(), 500);
+        
+            this.cameras.main.shake(200, 0.01);
         };
 
         generateChallenge();
