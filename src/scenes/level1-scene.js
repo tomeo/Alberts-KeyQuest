@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import GlowFilterPipelinePlugin from 'phaser3-rex-plugins/plugins/glowfilterpipeline-plugin.js';
 import { addOptions } from "../options.js";
+import { addBackToTitleButton } from "../utils.js";
 
 export default class Level1Scene extends Phaser.Scene {
     constructor() {
@@ -26,6 +27,7 @@ export default class Level1Scene extends Phaser.Scene {
         });
 
         addOptions(this);
+        addBackToTitleButton(this);
 
         let albert = this.add.sprite(width / 2, height - 100, 'albert');
         albert.play('idle');

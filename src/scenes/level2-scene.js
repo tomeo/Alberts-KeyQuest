@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { addOptions } from "../options.js";
 import { getRandomWord, speakText } from "../utils.js";
+import { addBackToTitleButton } from "../utils.js";
 
 export default class Level2Scene extends Phaser.Scene {
     constructor() {
@@ -15,6 +16,7 @@ export default class Level2Scene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         addOptions(this);
+        addBackToTitleButton(this);
 
         let currentWord = "";
         let currentIcon = "";

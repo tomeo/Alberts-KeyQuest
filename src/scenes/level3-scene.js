@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { addOptions } from "../options.js";
+import { addBackToTitleButton } from "../utils.js";
 
 export default class Level3Scene extends Phaser.Scene {
     constructor() {
@@ -10,6 +11,7 @@ export default class Level3Scene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         addOptions(this);
+        addBackToTitleButton(this);
 
         let activeLetters = [];
         let activeCharacters = new Set();  // Track active letters/numbers

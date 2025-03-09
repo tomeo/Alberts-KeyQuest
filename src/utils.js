@@ -45,3 +45,21 @@ export const speakText = (text, callback = null) => {
     }
 };
 
+export const addBackToTitleButton = (scene) => {
+    const backButton = scene.add.text(20, 20, "← Back to Title", {
+        fontFamily: '"Press Start 2P", cursive',
+        fontSize: "1rem",
+        fill: "#fff",
+        backgroundColor: "#333",
+        padding: { x: 10, y: 5 }
+    }).setInteractive();
+
+    // Hover effect for the button
+    backButton.on('pointerover', () => backButton.setStyle({ fill: "#FFD700" }));
+    backButton.on('pointerout', () => backButton.setStyle({ fill: "#fff" }));
+
+    // Click action to go back to the title screen
+    backButton.on('pointerup', () => {
+        scene.scene.start("TitleScene");
+    });
+};
