@@ -25,6 +25,41 @@ export default class Level2Scene extends Phaser.Scene {
         let femaleVoice = null;
         let usedWords = new Set();  // Track used words to avoid duplicates
 
+        // Extracted sound functions from Level 3
+        const audioContext = this.sound.context;
+
+        const playCorrectSound = () => {
+            const gainNode = audioContext.createGain();
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);  // Set volume
+            gainNode.connect(audioContext.destination);
+
+            // Create a major chord (C5 + E5 + G5)
+            const frequencies = [523.25, 659.25, 784.0];  // C5, E5, G5
+            frequencies.forEach((frequency, index) => {
+                const oscillator = audioContext.createOscillator();
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.connect(gainNode);
+                oscillator.start(audioContext.currentTime + index * 0.05);  // Slight delay for a chord effect
+                oscillator.stop(audioContext.currentTime + 0.3 + index * 0.05);  // Play for 0.3s each
+            });
+        };
+
+        const playIncorrectSound = () => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.type = 'sawtooth';  // Harsh tone for incorrect answers
+            oscillator.frequency.setValueAtTime(120, audioContext.currentTime);  // Low buzz
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);  // Set volume
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.2);  // Play for 0.2 seconds
+        };
+
         // Keep the original size for the icon (36rem)
         const iconText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
@@ -64,38 +99,6 @@ export default class Level2Scene extends Phaser.Scene {
             hintText.setText(hintDisplay);
         };
 
-        const setFemaleVoice = () => {
-            const voices = speechSynthesis.getVoices();
-            femaleVoice = voices.find(voice => 
-                voice.name.includes("Female") || 
-                voice.name.toLowerCase().includes("woman") ||
-                voice.name.toLowerCase().includes("girl") ||
-                voice.name.includes("Google UK English Female")
-            );
-        };
-
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = setFemaleVoice;
-        } else {
-            setFemaleVoice();
-        }
-
-        const speakText = (text, callback = null) => {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1;
-            utterance.pitch = 1;
-
-            if (femaleVoice) {
-                utterance.voice = femaleVoice;
-            }
-
-            utterance.onend = () => {
-                if (callback) callback();
-            };
-
-            speechSynthesis.speak(utterance);
-        };
-
         const loadNewWord = () => {
             let newWordData;
             do {
@@ -105,8 +108,6 @@ export default class Level2Scene extends Phaser.Scene {
             currentWord = newWordData.word.toUpperCase();
             currentIcon = newWordData.icon;
             typedWord = "";
-
-            usedWords.add(currentWord);  // Track used words
 
             underscoreText.setScale(1);  // Reset size for new word
             iconText.setScale(1);        // Reset icon size
@@ -118,17 +119,7 @@ export default class Level2Scene extends Phaser.Scene {
 
         const handleCorrectAnswer = () => {
             isSpeaking = true;
-
-            // Spin and temporary 50% more scale-up effect for the icon
-            this.tweens.add({
-                targets: iconText,
-                scaleX: 2.25,  // Temporarily scale to 2.25x size (50% more than 1.5x)
-                scaleY: 2.25,  // Temporarily scale to 2.25x size (50% more than 1.5x)
-                angle: 360,    // Spin 360 degrees
-                duration: 2000,
-                ease: 'Cubic.easeOut',
-                yoyo: true  // Return to original size and angle
-            });
+            playCorrectSound();  // Play correct sound
 
             // Start enlarging the word slowly
             const tween = this.tweens.add({
@@ -163,6 +154,7 @@ export default class Level2Scene extends Phaser.Scene {
                     handleCorrectAnswer();  // Speak the full word on correct completion
                 }
             } else {
+                playIncorrectSound();  // Play incorrect sound
                 this.cameras.main.shake(200, 0.01);  // Shake on wrong answer
             }
         });
