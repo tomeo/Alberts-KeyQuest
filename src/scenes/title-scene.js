@@ -15,15 +15,19 @@ export default class TitleScene extends Phaser.Scene {
             fill: "#fff"
         }).setOrigin(0.5);
 
-        // Option for Level 1
-        const level1Text = this.add.text(width / 2, height * 0.5, "Press 1 for Level 1", {
+        this.add.text(width / 2, height * 0.4, "Press 1 for Level 1", {
             fontFamily: '"Press Start 2P", cursive',
             fontSize: "1.5rem",
             fill: "#fff"
         }).setOrigin(0.5);
 
-        // Option for Level 2
-        const level2Text = this.add.text(width / 2, height * 0.6, "Press 2 for Level 2", {
+        this.add.text(width / 2, height * 0.5, "Press 2 for Level 2", {
+            fontFamily: '"Press Start 2P", cursive',
+            fontSize: "1.5rem",
+            fill: "#fff"
+        }).setOrigin(0.5);
+
+        this.add.text(width / 2, height * 0.6, "Press 3 for Level 3", {
             fontFamily: '"Press Start 2P", cursive',
             fontSize: "1.5rem",
             fill: "#fff"
@@ -31,14 +35,8 @@ export default class TitleScene extends Phaser.Scene {
 
         addOptions(this);
 
-        // Event listener for Level 1
-        this.input.keyboard.on("keydown-ONE", () => {
-            this.scene.start("Level1Scene");
-        });
-
-        // Event listener for Level 2
-        this.input.keyboard.on("keydown-TWO", () => {
-            this.scene.start("Level2Scene");
-        });
+        this.input.keyboard.on("keydown-ONE", () => this.scene.start("Level1Scene"));
+        this.input.keyboard.on("keydown-TWO", () => this.scene.start("Level2Scene"));
+        this.input.keyboard.on("keydown-THREE", () => this.scene.start("Level3Scene"));
     }
 }

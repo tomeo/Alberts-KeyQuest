@@ -33,9 +33,15 @@ export const speakText = (text, callback = null) => {
     utterance.rate = 1;
     utterance.pitch = 1;
 
-    utterance.onend = () => {
-        if (callback) callback();
-    };
+    // Ensure it doesn't block the main thread
+    setTimeout(() => {
+        speechSynthesis.speak(utterance);
+    }, 0);
 
-    speechSynthesis.speak(utterance);
+    if (callback) {
+        utterance.onend = () => {
+            setTimeout(callback, 0);  // Use setTimeout to avoid blocking
+        };
+    }
 };
+
