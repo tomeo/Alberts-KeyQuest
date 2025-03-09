@@ -24,9 +24,9 @@ export default class Level2Scene extends Phaser.Scene {
         let isSpeaking = false;
         let femaleVoice = null;
 
-        const iconText = this.add.text(width / 2, height * 0.2, "", {
+        const iconText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
-            fontSize: "12rem",
+            fontSize: "18rem",
             fill: "#FFD700"
         }).setOrigin(0.5);
 
@@ -36,7 +36,7 @@ export default class Level2Scene extends Phaser.Scene {
             fill: "#fff"
         }).setOrigin(0.5);
 
-        const hintText = this.add.text(width / 2, height * 0.6, "", {
+        const hintText = this.add.text(width / 2, height * 0.55, "", {
             fontFamily: '"Press Start 2P", cursive',
             fontSize: "2rem",
             fill: "#888"
@@ -116,10 +116,10 @@ export default class Level2Scene extends Phaser.Scene {
             if (event.key.toUpperCase() === expectedLetter) {
                 typedWord += event.key.toUpperCase();
                 updateWordDisplay();
-                speakText(expectedLetter);
+                speakText(expectedLetter);  // Speak each correct letter
 
                 if (typedWord.length === currentWord.length) {
-                    handleCorrectAnswer();
+                    handleCorrectAnswer();  // Speak the full word on correct completion
                 }
             } else {
                 this.cameras.main.shake(200, 0.01);  // Shake on wrong answer
