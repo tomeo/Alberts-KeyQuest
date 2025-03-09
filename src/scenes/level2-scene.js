@@ -23,6 +23,7 @@ export default class Level2Scene extends Phaser.Scene {
         let typedWord = "";
         let isSpeaking = false;
         let femaleVoice = null;
+        let usedWords = new Set();  // Track used words to avoid duplicates
 
         const iconText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
@@ -93,10 +94,17 @@ export default class Level2Scene extends Phaser.Scene {
         };
 
         const loadNewWord = () => {
-            const { word, icon } = getRandomWord();
-            currentWord = word.toUpperCase();
-            currentIcon = icon;
+            let newWordData;
+            do {
+                newWordData = getRandomWord();
+            } while (usedWords.has(newWordData.word.toUpperCase()) && usedWords.size < 23);  // Prevent duplicates until all words are used
+
+            currentWord = newWordData.word.toUpperCase();
+            currentIcon = newWordData.icon;
             typedWord = "";
+
+            usedWords.add(currentWord);  // Track used words
+
             iconText.setText(currentIcon);
             updateWordDisplay();
         };
