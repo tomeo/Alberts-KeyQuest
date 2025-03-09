@@ -30,18 +30,17 @@ export default class Level2Scene extends Phaser.Scene {
 
         const playCorrectSound = () => {
             const gainNode = audioContext.createGain();
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);  // Set volume
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
             gainNode.connect(audioContext.destination);
 
-            // Create a major chord (C5 + E5 + G5)
-            const frequencies = [523.25, 659.25, 784.0];  // C5, E5, G5
+            const frequencies = [523.25, 659.25, 784.0];
             frequencies.forEach((frequency, index) => {
                 const oscillator = audioContext.createOscillator();
                 oscillator.type = 'triangle';
                 oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
                 oscillator.connect(gainNode);
-                oscillator.start(audioContext.currentTime + index * 0.05);  // Slight delay for a chord effect
-                oscillator.stop(audioContext.currentTime + 0.3 + index * 0.05);  // Play for 0.3s each
+                oscillator.start(audioContext.currentTime + index * 0.05);
+                oscillator.stop(audioContext.currentTime + 0.3 + index * 0.05);
             });
         };
 
@@ -49,35 +48,32 @@ export default class Level2Scene extends Phaser.Scene {
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
 
-            oscillator.type = 'sawtooth';  // Harsh tone for incorrect answers
-            oscillator.frequency.setValueAtTime(120, audioContext.currentTime);  // Low buzz
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);  // Set volume
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(120, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
 
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
 
             oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.2);  // Play for 0.2 seconds
+            oscillator.stop(audioContext.currentTime + 0.2);
         };
 
-        // Keep the original size for the icon (36rem)
         const iconText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
-            fontSize: "36rem",  // Original size
+            fontSize: "36rem",
             fill: "#FFD700"
         }).setOrigin(0.5);
 
-        // Move underscores further down the screen
         const underscoreText = this.add.text(width / 2, height * 0.7, "", {
             fontFamily: '"Press Start 2P", cursive',
-            fontSize: "6rem",  // Doubled size for underscores
+            fontSize: "6rem",
             fill: "#fff"
         }).setOrigin(0.5);
 
-        // Move hint text even further down to avoid overlap
         const hintText = this.add.text(width / 2, height * 0.85, "", {
             fontFamily: '"Press Start 2P", cursive',
-            fontSize: "4rem",  // Doubled size for hints
+            fontSize: "4rem",
             fill: "#888"
         }).setOrigin(0.5);
 
@@ -87,11 +83,11 @@ export default class Level2Scene extends Phaser.Scene {
 
             for (let i = 0; i < currentWord.length; i++) {
                 if (i < typedWord.length) {
-                    displayText += currentWord[i];  // Show correct letters directly
-                    hintDisplay += " ";  // Empty space for typed letters
+                    displayText += currentWord[i];
+                    hintDisplay += " ";
                 } else {
-                    displayText += "_";  // Show underscores for remaining letters
-                    hintDisplay += currentWord[i];  // Show letter hints directly under underscores
+                    displayText += "_";
+                    hintDisplay += currentWord[i];
                 }
             }
 
@@ -103,15 +99,15 @@ export default class Level2Scene extends Phaser.Scene {
             let newWordData;
             do {
                 newWordData = getRandomWord();
-            } while (usedWords.has(newWordData.word.toUpperCase()) && usedWords.size < 23);  // Prevent duplicates until all words are used
+            } while (usedWords.has(newWordData.word.toUpperCase()) && usedWords.size < 23);
 
             currentWord = newWordData.word.toUpperCase();
             currentIcon = newWordData.icon;
             typedWord = "";
 
-            underscoreText.setScale(1);  // Reset size for new word
-            iconText.setScale(1);        // Reset icon size
-            iconText.setAngle(0);        // Reset icon rotation
+            underscoreText.setScale(1);
+            iconText.setScale(1);
+            iconText.setAngle(0);
 
             iconText.setText(currentIcon);
             updateWordDisplay();
@@ -119,24 +115,31 @@ export default class Level2Scene extends Phaser.Scene {
 
         const handleCorrectAnswer = () => {
             isSpeaking = true;
-            playCorrectSound();  // Play correct sound
+            playCorrectSound();
 
-            // Start enlarging the word slowly
+            // Spin and 50% more scale-up effect for the icon
+            this.tweens.add({
+                targets: iconText,
+                scaleX: 2.25,  // 50% larger than before
+                scaleY: 2.25,  // 50% larger than before
+                angle: 360,
+                duration: 2000,
+                ease: 'Cubic.easeOut',
+                yoyo: true  // Return to original size and angle
+            });
+
             const tween = this.tweens.add({
                 targets: underscoreText,
                 scaleX: 2,
                 scaleY: 2,
-                duration: 2000,  // Grow slowly over 2 seconds
+                duration: 2000,
                 ease: 'Linear'
             });
 
             speakText(`Yes, that was ${currentWord}, good job!`, () => {
                 isSpeaking = false;
-
-                // Stop enlarging and reset size
                 tween.stop();
                 underscoreText.setScale(1);
-
                 loadNewWord();
             });
         };
@@ -148,14 +151,14 @@ export default class Level2Scene extends Phaser.Scene {
             if (event.key.toUpperCase() === expectedLetter) {
                 typedWord += event.key.toUpperCase();
                 updateWordDisplay();
-                speakText(expectedLetter);  // Speak each correct letter
+                speakText(expectedLetter);
 
                 if (typedWord.length === currentWord.length) {
-                    handleCorrectAnswer();  // Speak the full word on correct completion
+                    handleCorrectAnswer();
                 }
             } else {
-                playIncorrectSound();  // Play incorrect sound
-                this.cameras.main.shake(200, 0.01);  // Shake on wrong answer
+                playIncorrectSound();
+                this.cameras.main.shake(200, 0.01);
             }
         });
 
