@@ -25,10 +25,10 @@ export default class Level2Scene extends Phaser.Scene {
         let femaleVoice = null;
         let usedWords = new Set();  // Track used words to avoid duplicates
 
-        // Move icon further down the screen
+        // Keep the original size for the icon (36rem)
         const iconText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
-            fontSize: "36rem",  // Doubled size for icon
+            fontSize: "36rem",  // Original size
             fill: "#FFD700"
         }).setOrigin(0.5);
 
@@ -108,14 +108,44 @@ export default class Level2Scene extends Phaser.Scene {
 
             usedWords.add(currentWord);  // Track used words
 
+            underscoreText.setScale(1);  // Reset size for new word
+            iconText.setScale(1);        // Reset icon size
+            iconText.setAngle(0);        // Reset icon rotation
+
             iconText.setText(currentIcon);
             updateWordDisplay();
         };
 
         const handleCorrectAnswer = () => {
             isSpeaking = true;
+
+            // Spin and temporary 50% more scale-up effect for the icon
+            this.tweens.add({
+                targets: iconText,
+                scaleX: 2.25,  // Temporarily scale to 2.25x size (50% more than 1.5x)
+                scaleY: 2.25,  // Temporarily scale to 2.25x size (50% more than 1.5x)
+                angle: 360,    // Spin 360 degrees
+                duration: 2000,
+                ease: 'Cubic.easeOut',
+                yoyo: true  // Return to original size and angle
+            });
+
+            // Start enlarging the word slowly
+            const tween = this.tweens.add({
+                targets: underscoreText,
+                scaleX: 2,
+                scaleY: 2,
+                duration: 2000,  // Grow slowly over 2 seconds
+                ease: 'Linear'
+            });
+
             speakText(`Yes, that was ${currentWord}, good job!`, () => {
                 isSpeaking = false;
+
+                // Stop enlarging and reset size
+                tween.stop();
+                underscoreText.setScale(1);
+
                 loadNewWord();
             });
         };
