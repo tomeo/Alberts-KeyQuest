@@ -25,21 +25,24 @@ export default class Level2Scene extends Phaser.Scene {
         let femaleVoice = null;
         let usedWords = new Set();  // Track used words to avoid duplicates
 
+        // Move icon further down the screen
         const iconText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
-            fontSize: "18rem",
+            fontSize: "36rem",  // Doubled size for icon
             fill: "#FFD700"
         }).setOrigin(0.5);
 
-        const underscoreText = this.add.text(width / 2, height * 0.5, "", {
+        // Move underscores further down the screen
+        const underscoreText = this.add.text(width / 2, height * 0.7, "", {
             fontFamily: '"Press Start 2P", cursive',
-            fontSize: "3rem",
+            fontSize: "6rem",  // Doubled size for underscores
             fill: "#fff"
         }).setOrigin(0.5);
 
-        const hintText = this.add.text(width / 2, height * 0.55, "", {
+        // Move hint text even further down to avoid overlap
+        const hintText = this.add.text(width / 2, height * 0.85, "", {
             fontFamily: '"Press Start 2P", cursive',
-            fontSize: "2rem",
+            fontSize: "4rem",  // Doubled size for hints
             fill: "#888"
         }).setOrigin(0.5);
 
