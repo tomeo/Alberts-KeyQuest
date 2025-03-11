@@ -60,7 +60,7 @@ export default class Level2Scene extends Phaser.Scene {
         const loadNewWord = () => {
             let newWordData;
             do {
-                newWordData = this.wordManager.getRandomWord();
+                newWordData = this.wordManager.getRandomWordByLength(3);
             } while (usedWords.has(newWordData.word.toUpperCase()) && usedWords.size < 23);
 
             currentWord = newWordData.word.toUpperCase();
