@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { addOptions } from "../options.js";
 import { addBackToTitleButton } from "../utils.js";
 import WordManager from "../WordManager.js";
+import AudioManager from "../AudioManager.js";
 
 export default class Level3Scene extends Phaser.Scene {
     constructor() {
@@ -15,42 +16,11 @@ export default class Level3Scene extends Phaser.Scene {
         addOptions(this);
         addBackToTitleButton(this);
 
+        this.audioManager = new AudioManager(this);
+
         let activeLetters = [];
         let activeCharacters = new Set();
         let keyQueue = [];
-
-        const audioContext = this.sound.context;
-
-        const playCorrectSound = () => {
-            const gainNode = audioContext.createGain();
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
-            gainNode.connect(audioContext.destination);
-
-            const frequencies = [523.25, 659.25, 784.0];
-            frequencies.forEach((frequency, index) => {
-                const oscillator = audioContext.createOscillator();
-                oscillator.type = 'triangle';
-                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-                oscillator.connect(gainNode);
-                oscillator.start(audioContext.currentTime + index * 0.05);
-                oscillator.stop(audioContext.currentTime + 0.3 + index * 0.05);
-            });
-        };
-
-        const playIncorrectSound = () => {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-
-            oscillator.type = 'sawtooth';
-            oscillator.frequency.setValueAtTime(120, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
-
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.2);
-        };
 
         const getRandomCharacter = () => {
             let wordData;
@@ -60,7 +30,11 @@ export default class Level3Scene extends Phaser.Scene {
 
             const char = wordData.word.charAt(0).toUpperCase();
             activeCharacters.add(char);
-            return { letter: char, icon: wordData.icon, word: wordData.word };
+            return { 
+                letter: char, 
+                icon: wordData.icon, 
+                word: wordData.word.toUpperCase()
+            };
         };
 
         const createFallingCharacter = () => {
@@ -113,20 +87,20 @@ export default class Level3Scene extends Phaser.Scene {
                     activeLetters.splice(i, 1);
                     activeCharacters.delete(letterChar);
 
-                    playCorrectSound();
+                    this.audioManager.playCorrectSound();
 
                     const iconText = this.add.text(letter.x, letter.y, letter.getData('icon'), {
                         fontFamily: '"Roboto", sans-serif',
                         fontSize: "6rem"
                     }).setOrigin(0.5);
 
-                    const wordText = this.add.text(letter.x, letter.y + 70, letter.getData('word').toUpperCase(), {
+                    const wordText = this.add.text(letter.x, letter.y + 75, letter.getData('word'), {
                         fontFamily: '"Roboto", sans-serif',
-                        fontSize: "1.5rem",
+                        fontSize: "2rem",
                         fill: "#fff"
                     }).setOrigin(0.5);
 
-                    letter.setAlpha(0); // Hide the letter immediately
+                    letter.setAlpha(0);
 
                     this.tweens.add({
                         targets: [iconText, wordText],
@@ -145,7 +119,7 @@ export default class Level3Scene extends Phaser.Scene {
             }
 
             if (!letterProcessed) {
-                playIncorrectSound();
+                this.audioManager.playIncorrectSound();
                 this.cameras.main.shake(200, 0.01);
                 processKeyQueue();
             }
