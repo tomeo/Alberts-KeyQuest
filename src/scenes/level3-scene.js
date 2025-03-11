@@ -1,10 +1,12 @@
 import Phaser from "phaser";
 import { addOptions } from "../options.js";
 import { addBackToTitleButton } from "../utils.js";
+import WordManager from "../WordManager.js";
 
 export default class Level3Scene extends Phaser.Scene {
     constructor() {
         super("Level3Scene");
+        this.wordManager = new WordManager();
     }
 
     create() {
@@ -51,27 +53,29 @@ export default class Level3Scene extends Phaser.Scene {
         };
 
         const getRandomCharacter = () => {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
-            let char;
+            let wordData;
             do {
-                char = chars.charAt(Math.floor(Math.random() * chars.length));
-            } while (activeCharacters.has(char));
+                wordData = this.wordManager.getRandomWord();
+            } while (activeCharacters.has(wordData.word.charAt(0).toUpperCase()));
 
+            const char = wordData.word.charAt(0).toUpperCase();
             activeCharacters.add(char);
-            return char;
+            return { letter: char, icon: wordData.icon, word: wordData.word };
         };
 
         const createFallingCharacter = () => {
             if (activeLetters.length >= 3) return;
 
-            const char = getRandomCharacter();
-            const text = this.add.text(Phaser.Math.Between(50, width - 50), -50, char, {
+            const { letter, icon, word } = getRandomCharacter();
+            const text = this.add.text(Phaser.Math.Between(50, width - 50), -50, letter, {
                 fontFamily: '"Roboto", sans-serif',
                 fontSize: "6rem",
                 fill: "#fff"
             }).setOrigin(0.5);
 
-            text.setData('char', char);
+            text.setData('char', letter);
+            text.setData('icon', icon);
+            text.setData('word', word);
             text.setData('speed', Phaser.Math.Between(50, 150));
             text.setData('processed', false);
             activeLetters.push(text);
@@ -111,15 +115,26 @@ export default class Level3Scene extends Phaser.Scene {
 
                     playCorrectSound();
 
-                    letter.setFill("#32CD32");
-                    letter.setData('speed', 0);
+                    const iconText = this.add.text(letter.x, letter.y, letter.getData('icon'), {
+                        fontFamily: '"Roboto", sans-serif',
+                        fontSize: "6rem"
+                    }).setOrigin(0.5);
+
+                    const wordText = this.add.text(letter.x, letter.y + 70, letter.getData('word').toUpperCase(), {
+                        fontFamily: '"Roboto", sans-serif',
+                        fontSize: "1.5rem",
+                        fill: "#fff"
+                    }).setOrigin(0.5);
+
+                    letter.setAlpha(0); // Hide the letter immediately
 
                     this.tweens.add({
-                        targets: letter,
+                        targets: [iconText, wordText],
                         alpha: 0,
-                        duration: 500,
+                        duration: 1500,
                         onComplete: () => {
-                            letter.destroy();
+                            iconText.destroy();
+                            wordText.destroy();
                             createFallingCharacter();
                             processKeyQueue();
                         }
