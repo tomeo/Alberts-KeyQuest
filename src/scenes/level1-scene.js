@@ -32,7 +32,7 @@ export default class Level1Scene extends Phaser.Scene {
 
         const challengeText = this.add.text(width / 2, height * 0.3, "", {
             fontFamily: '"Roboto", sans-serif',
-            fontSize: "12rem",
+            fontSize: "36rem",
             fill: "#FFD700"
         }).setOrigin(0.5);
 
@@ -55,14 +55,19 @@ export default class Level1Scene extends Phaser.Scene {
 
             const iconText = this.add.text(challengeText.x, challengeText.y, currentIcon, {
                 fontFamily: '"Roboto", sans-serif',
-                fontSize: "8rem"
+                fontSize: "24rem"
             }).setOrigin(0.5);
 
-            const wordText = this.add.text(challengeText.x, challengeText.y + 100, currentWord.charAt(0).toUpperCase() + currentWord.slice(1), {
-                fontFamily: '"Roboto", sans-serif',
-                fontSize: "1.5rem",
-                fill: "#fff"
-            }).setOrigin(0.5);
+            const wordText = this.add.text(
+                challengeText.x,
+                challengeText.y + 300,
+                currentWord.toUpperCase(),
+                {
+                    fontFamily: '"Roboto", sans-serif',
+                    fontSize: "8rem",
+                    fill: "#fff"
+                }
+            ).setOrigin(0.5);
 
             challengeText.setText(""); // Hide the letter
 
