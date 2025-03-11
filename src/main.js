@@ -1,4 +1,7 @@
 import Phaser from "phaser";
+
+console.log("🚀 Phaser is attempting to start!");
+
 import TitleScene from "./scenes/title-scene.js";
 import Level1Scene from "./scenes/level1-scene.js";
 import Level2Scene from "./scenes/level2-scene.js";

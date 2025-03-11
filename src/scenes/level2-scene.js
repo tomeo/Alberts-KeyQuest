@@ -8,9 +8,7 @@ export default class Level2Scene extends Phaser.Scene {
         super("Level2Scene");
     }
 
-    preload() {
-        // Preload assets if needed
-    }
+    preload() {}
 
     create() {
         const { width, height } = this.scale;
@@ -22,10 +20,8 @@ export default class Level2Scene extends Phaser.Scene {
         let currentIcon = "";
         let typedWord = "";
         let isSpeaking = false;
-        let femaleVoice = null;
-        let usedWords = new Set();  // Track used words to avoid duplicates
+        let usedWords = new Set();
 
-        // Extracted sound functions from Level 3
         const audioContext = this.sound.context;
 
         const playCorrectSound = () => {
@@ -66,13 +62,13 @@ export default class Level2Scene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         const underscoreText = this.add.text(width / 2, height * 0.7, "", {
-            fontFamily: '"Press Start 2P", cursive',
+            fontFamily: '"Roboto", sans-serif',
             fontSize: "6rem",
             fill: "#fff"
         }).setOrigin(0.5);
 
         const hintText = this.add.text(width / 2, height * 0.85, "", {
-            fontFamily: '"Press Start 2P", cursive',
+            fontFamily: '"Roboto", sans-serif',
             fontSize: "4rem",
             fill: "#888"
         }).setOrigin(0.5);
@@ -83,16 +79,16 @@ export default class Level2Scene extends Phaser.Scene {
 
             for (let i = 0; i < currentWord.length; i++) {
                 if (i < typedWord.length) {
-                    displayText += currentWord[i];
-                    hintDisplay += " ";
+                    displayText += currentWord[i] + " "; 
+                    hintDisplay += "  "; 
                 } else {
-                    displayText += "_";
-                    hintDisplay += currentWord[i];
+                    displayText += "_ "; 
+                    hintDisplay += currentWord[i] + " "; 
                 }
             }
 
-            underscoreText.setText(displayText);
-            hintText.setText(hintDisplay);
+            underscoreText.setText(displayText.trim());
+            hintText.setText(hintDisplay.trim());
         };
 
         const loadNewWord = () => {
@@ -117,15 +113,14 @@ export default class Level2Scene extends Phaser.Scene {
             isSpeaking = true;
             playCorrectSound();
 
-            // Spin and 50% more scale-up effect for the icon
             this.tweens.add({
                 targets: iconText,
-                scaleX: 2.25,  // 50% larger than before
-                scaleY: 2.25,  // 50% larger than before
+                scaleX: 2.25,
+                scaleY: 2.25,
                 angle: 360,
                 duration: 2000,
                 ease: 'Cubic.easeOut',
-                yoyo: true  // Return to original size and angle
+                yoyo: true
             });
 
             const tween = this.tweens.add({
