@@ -1,0 +1,63 @@
+export default class WordManager {
+    constructor() {
+        this.wordsWithIcons = [
+            { word: "Cat", icon: "🐱" },
+            { word: "Dog", icon: "🐕" },
+            { word: "Sun", icon: "🌞" },
+            { word: "Bee", icon: "🐝" },
+            { word: "Pig", icon: "🐖" },
+            { word: "Fox", icon: "🦊" },
+            { word: "Bus", icon: "🚌" },
+            { word: "Car", icon: "🚗" },
+            { word: "Key", icon: "🔑" },
+            { word: "Hat", icon: "🎩" },
+            { word: "Bat", icon: "🦇" },
+            { word: "Bug", icon: "🐛" },
+            { word: "Cow", icon: "🐄" },
+            { word: "Hen", icon: "🐓" },
+            { word: "Box", icon: "📦" },
+            { word: "Cup", icon: "🏆" },
+            { word: "Pen", icon: "🖊️" },
+            { word: "Map", icon: "🗺️" },
+            { word: "Bow", icon: "🎀" },
+            { word: "Owl", icon: "🦉" },
+            { word: "Cap", icon: "🧢" },
+            { word: "Elf", icon: "🧝" },
+            { word: "Man", icon: "👨" },
+            { word: "Egg", icon: "🥚" },
+            { word: "Sky", icon: "☁️" },
+            { word: "Sea", icon: "🌊" },
+            { word: "Bed", icon: "🛏️" },
+            { word: "Ice", icon: "🧊" },
+            { word: "Jam", icon: "🍓" },
+            { word: "Lip", icon: "👄" },
+            { word: "Net", icon: "🕸️" },
+            { word: "Pie", icon: "🥧" },
+            { word: "Rod", icon: "🎣" },
+            { word: "Toy", icon: "🧸" },
+            { word: "Ink", icon: "🖋️" },
+            { word: "Pad", icon: "📓" },
+            { word: "Van", icon: "🚐" },
+            { word: "Web", icon: "🕸️" },
+            { word: "Tap", icon: "🚰" },
+            { word: "Ant", icon: "🐜" },
+            { word: "Rat", icon: "🐀" },
+            { word: "Jar", icon: "🥫" },
+            { word: "Fan", icon: "🌀" },
+            { word: "Log", icon: "🪵" },
+            { word: "Gem", icon: "💎" },
+            { word: "Ham", icon: "🍖" },
+            { word: "Nut", icon: "🥜" },
+            { word: "Pin", icon: "📌" },
+            { word: "Rug", icon: "🖼️" },
+            { word: "Tag", icon: "🏷️" },
+            { word: "Yak", icon: "🐃" },
+            { word: "Wig", icon: "🤡" },
+            { word: "Zip", icon: "🧳" }
+        ];
+    }
+
+    getRandomWord() {
+        return this.wordsWithIcons[Math.floor(Math.random() * this.wordsWithIcons.length)];
+    }
+}
