@@ -31,7 +31,7 @@ export const speakText = (text, callback = null) => {
 };
 
 export const addBackToTitleButton = (scene) => {
-    const backButton = scene.add.text(20, 20, "← Back to Title", {
+    const backButton = scene.add.text(20, 20, "< Back to Title", {
         fontFamily: '"Press Start 2P", cursive',
         fontSize: "1rem",
         fill: "#fff",
