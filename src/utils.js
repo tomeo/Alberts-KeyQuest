@@ -99,19 +99,34 @@ export const getRandomWord = () => {
     return wordsWithIcons[Math.floor(Math.random() * wordsWithIcons.length)];
 };
 
+let femaleVoice = null;
+const setFemaleVoice = () => {
+    const voices = speechSynthesis.getVoices();
+    femaleVoice = voices.find(voice => voice.name.includes("Female") || voice.name.includes("Google UK English Female"));
+};
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = setFemaleVoice;
+} else {
+    setFemaleVoice();
+}
+
 export const speakText = (text, callback = null) => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1;
     utterance.pitch = 1;
 
-    // Ensure it doesn't block the main thread
+    if (femaleVoice) {
+        utterance.voice = femaleVoice;
+    }
+
     setTimeout(() => {
         speechSynthesis.speak(utterance);
     }, 0);
 
     if (callback) {
         utterance.onend = () => {
-            setTimeout(callback, 0);  // Use setTimeout to avoid blocking
+            setTimeout(callback, 0);
         };
     }
 };
