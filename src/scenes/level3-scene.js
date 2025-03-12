@@ -21,6 +21,7 @@ export default class Level3Scene extends Phaser.Scene {
         let activeLetters = [];
         let activeCharacters = new Set();
         let keyQueue = [];
+        let warningCircles = new Map();
 
         const getRandomCharacter = () => {
             let wordData;
@@ -55,16 +56,56 @@ export default class Level3Scene extends Phaser.Scene {
             activeLetters.push(text);
         };
 
+        const createWarningCircle = (letter) => {
+            if (warningCircles.has(letter)) return; // Avoid creating multiple circles
+
+            const circleSize = 65; // Increased size (30% larger)
+            const circle = this.add.graphics();
+            circle.fillStyle(0xff0000, 1); // **Solid red with no opacity**
+            circle.fillCircle(0, 0, circleSize);
+            circle.setDepth(-1); // Ensures the letter stays **above** the circle
+            circle.setPosition(letter.x, letter.y);
+
+            this.tweens.add({
+                targets: circle,
+                alpha: 0.2, // Fades slightly for effect
+                duration: 150, // **Faster blinking effect**
+                yoyo: true,
+                repeat: -1
+            });
+
+            warningCircles.set(letter, circle);
+        };
+
         const updateFallingLetters = (time, delta) => {
             for (let i = activeLetters.length - 1; i >= 0; i--) {
                 const letter = activeLetters[i];
                 letter.y += letter.getData('speed') * delta / 1000;
 
+                // **Warning circle starts at 60% of the screen height instead of 70%**
+                if (letter.y > height * 0.6) {
+                    if (!warningCircles.has(letter)) {
+                        createWarningCircle(letter);
+                    }
+                }
+
+                // If there's a warning circle, make sure it follows the letter
+                if (warningCircles.has(letter)) {
+                    warningCircles.get(letter).setPosition(letter.x, letter.y);
+                }
+
+                // If letter falls off the screen, remove it
                 if (letter.y > height + 50) {
                     const char = letter.getData('char');
                     activeCharacters.delete(char);
                     letter.destroy();
                     activeLetters.splice(i, 1);
+
+                    // Remove the warning circle if it exists
+                    if (warningCircles.has(letter)) {
+                        warningCircles.get(letter).destroy();
+                        warningCircles.delete(letter);
+                    }
                 }
             }
         };
@@ -101,6 +142,12 @@ export default class Level3Scene extends Phaser.Scene {
                     }).setOrigin(0.5);
 
                     letter.setAlpha(0);
+
+                    // Remove the warning circle if it exists
+                    if (warningCircles.has(letter)) {
+                        warningCircles.get(letter).destroy();
+                        warningCircles.delete(letter);
+                    }
 
                     this.tweens.add({
                         targets: [iconText, wordText],
