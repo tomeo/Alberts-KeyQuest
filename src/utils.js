@@ -11,23 +11,26 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 }
 
 export const speakText = (text, callback = null) => {
+    if (!("speechSynthesis" in window)) {
+        console.error("Speech synthesis not supported. Skipping speech.");
+        if (callback) callback();
+        return;
+    }
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1;
     utterance.pitch = 1;
 
-    if (femaleVoice) {
-        utterance.voice = femaleVoice;
-    }
+    utterance.onend = () => {
+        console.log(`Finished speaking: ${text}`);
+        if (callback) callback();
+    };
 
-    setTimeout(() => {
+    console.log(`Speaking: ${text}`);
+
+    document.body.addEventListener("click", () => {
         speechSynthesis.speak(utterance);
-    }, 0);
-
-    if (callback) {
-        utterance.onend = () => {
-            setTimeout(callback, 0);
-        };
-    }
+    }, { once: true });
 };
 
 export const addBackToTitleButton = (scene) => {
