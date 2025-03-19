@@ -61,7 +61,7 @@ export default class Level1Scene extends Phaser.Scene {
                 });
             } else {
                 console.error("❌ ResponsiveVoice.js is not loaded!");
-                if (callback) callback(); // Prevent game from freezing
+                if (callback) callback();
             }
         };
 
@@ -86,7 +86,7 @@ export default class Level1Scene extends Phaser.Scene {
                 }
             ).setOrigin(0.5);
 
-            challengeText.setText(""); // Hide the letter
+            challengeText.setText("");
 
             let speechCompleted = false;
 
@@ -94,8 +94,9 @@ export default class Level1Scene extends Phaser.Scene {
                 console.log(`🔊 Finished first speech for ${currentLetter}`);
 
                 setTimeout(() => {
+                    console.log(`🎤 Speaking second part: ${currentLetter} is for ${currentWord}`);
                     speakText(`${currentLetter} is for ${currentWord}`, () => {
-                        console.log(`🎤 Finished second speech for ${currentLetter}`);
+                        console.log(`✅ Finished second speech for ${currentLetter}`);
 
                         iconText.destroy();
                         wordText.destroy();
@@ -108,7 +109,6 @@ export default class Level1Scene extends Phaser.Scene {
                 }, 50);
             });
 
-            // 🚨 Safety: If speech never finishes, continue after 5s
             setTimeout(() => {
                 if (!speechCompleted) {
                     console.warn("⚠️ Speech timeout! Skipping...");
