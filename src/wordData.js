@@ -147,6 +147,6 @@ export const wordsWithIcons = [
     { word: "yarn", icon: "🧶" },
     { word: "yellow", icon: "💛" },
     { word: "zebra", icon: "🦓" },
-    { word: "zombie", icon: "🧟" }
+    { word: "zombie", icon: "🧟" },
     { word: "zebra", icon: "🦓" }
 ];
