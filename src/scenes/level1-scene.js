@@ -10,7 +10,7 @@ export default class Level1Scene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.atlasXML('albert', '../assets/character_maleAdventurer_sheetHD.png', '../assets/character_maleAdventurer_sheetHD.xml');
+        this.load.atlasXML('albert', '/character_maleAdventurer_sheetHD.png', '/character_maleAdventurer_sheetHD.xml');
     }
 
     create() {
@@ -71,6 +71,7 @@ export default class Level1Scene extends Phaser.Scene {
 
             challengeText.setText(""); // Hide the letter
 
+            console.log(`Speak ${currentLetter}`);
             speakText(`Yes, that is the letter ${currentLetter}`, () => {
                 setTimeout(() => {
                     speakText(`${currentLetter} is for ${currentWord}`, () => {
@@ -81,6 +82,7 @@ export default class Level1Scene extends Phaser.Scene {
                     });
                 }, 50);
             });
+            console.log(`Spoken ${currentLetter}`);
         };
 
         generateChallenge();
