@@ -37,7 +37,6 @@
             margin: auto;
         }
 
-        /* Start button to ensure user interaction for speech synthesis */
         #start-button {
             position: absolute;
             top: 50%;
@@ -57,28 +56,26 @@
         }
     </style>
 
-    <script type="module" crossorigin src="/assets/index-D2JRLkMB.js"></script>
+    <script type="module" src="/src/main.js"></script>
 </head>
 <body>
 
-    <!-- Start button to enable speech synthesis -->
     <button id="start-button">Start Game</button>
 
     <div id="game-container"></div>
 
     <script>
         document.getElementById("start-button").addEventListener("click", function () {
-            document.getElementById("start-button").style.display = "none"; // Hide button
+            document.getElementById("start-button").style.display = "none";
 
-            // Ensure ResponsiveVoice is loaded before speaking
             if (typeof responsiveVoice !== "undefined") {
                 responsiveVoice.speak("Welcome to Albert's KeyQuest!", "UK English Female", {
                     onend: () => {
-                        console.log("✅ Speech initialized successfully.");
+                        console.log("Speech initialized successfully.");
                     }
                 });
             } else {
-                console.error("❌ ResponsiveVoice.js not loaded!");
+                console.error("ResponsiveVoice.js not loaded!");
             }
         });
     </script>
