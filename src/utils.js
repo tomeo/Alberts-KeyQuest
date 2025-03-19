@@ -11,27 +11,27 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 }
 
 export const speakText = (text, callback = null) => {
-    if (!("speechSynthesis" in window)) {
-        console.error("Speech synthesis not supported. Skipping speech.");
+    if (typeof responsiveVoice !== "undefined") {
+        console.log(`🎤 Speaking: ${text}`);
+        
+        responsiveVoice.speak(text, "UK English Female", {
+            onend: () => {
+                console.log(`✅ Finished speaking: ${text}`);
+                if (callback) callback();
+            }
+        });
+
+        setTimeout(() => {
+            console.warn("⚠️ Speech timeout! Skipping...");
+            if (callback) callback();
+        }, 5000);
+
+    } else {
+        console.error("❌ ResponsiveVoice.js not loaded! Skipping speech.");
         if (callback) callback();
-        return;
     }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1;
-    utterance.pitch = 1;
-
-    utterance.onend = () => {
-        console.log(`Finished speaking: ${text}`);
-        if (callback) callback();
-    };
-
-    console.log(`Speaking: ${text}`);
-
-    document.body.addEventListener("click", () => {
-        speechSynthesis.speak(utterance);
-    }, { once: true });
 };
+
 
 export const addBackToTitleButton = (scene) => {
     const backButton = scene.add.text(20, 20, "< Back to Title", {

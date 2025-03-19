@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { addOptions } from "../options.js";
-import { addBackToTitleButton, speakText } from "../utils.js";
+import { addBackToTitleButton } from "../utils.js";
 import WordManager from "../WordManager.js";
 
 export default class Level1Scene extends Phaser.Scene {
@@ -50,7 +50,24 @@ export default class Level1Scene extends Phaser.Scene {
             challengeText.setText(currentLetter);
         };
 
+        const speakText = (text, callback = null) => {
+            if (typeof responsiveVoice !== "undefined") {
+                console.log(`🎤 Speaking: ${text}`);
+                responsiveVoice.speak(text, "UK English Female", {
+                    onend: () => {
+                        console.log(`✅ Finished speaking: ${text}`);
+                        if (callback) callback();
+                    }
+                });
+            } else {
+                console.error("❌ ResponsiveVoice.js is not loaded!");
+                if (callback) callback(); // Prevent game from freezing
+            }
+        };
+
         const handleCorrectAnswer = () => {
+            console.log(`✅ Correct! Handling answer for ${currentLetter}`);
+
             albert.play('cheer');
 
             const iconText = this.add.text(challengeText.x, challengeText.y, currentIcon, {
@@ -71,18 +88,36 @@ export default class Level1Scene extends Phaser.Scene {
 
             challengeText.setText(""); // Hide the letter
 
-            console.log(`Speak ${currentLetter}`);
+            let speechCompleted = false;
+
             speakText(`Yes, that is the letter ${currentLetter}`, () => {
+                console.log(`🔊 Finished first speech for ${currentLetter}`);
+
                 setTimeout(() => {
                     speakText(`${currentLetter} is for ${currentWord}`, () => {
+                        console.log(`🎤 Finished second speech for ${currentLetter}`);
+
                         iconText.destroy();
                         wordText.destroy();
                         albert.play('idle');
+
+                        speechCompleted = true;
+                        console.log("🎮 Generating next challenge...");
                         generateChallenge();
                     });
                 }, 50);
             });
-            console.log(`Spoken ${currentLetter}`);
+
+            // 🚨 Safety: If speech never finishes, continue after 5s
+            setTimeout(() => {
+                if (!speechCompleted) {
+                    console.warn("⚠️ Speech timeout! Skipping...");
+                    iconText.destroy();
+                    wordText.destroy();
+                    albert.play('idle');
+                    generateChallenge();
+                }
+            }, 5000);
         };
 
         generateChallenge();
