@@ -6,27 +6,98 @@ export default class TitleScene extends Phaser.Scene {
         super("TitleScene");
     }
 
+    preload() {
+        this.load.image("logo", "logo.png");
+    }
+
     create() {
         const { width, height } = this.scale;
 
-        const fontStyle = {
+        // Background layers
+        const gfx = this.add.graphics();
+
+        // Sky
+        gfx.fillStyle(0x552b84, 1);
+        gfx.fillRect(0, 0, width, height);
+
+        // Wavy hill 1
+        gfx.fillStyle(0x4d2676, 1);
+        gfx.beginPath();
+        gfx.moveTo(0, height * 0.75);
+        for (let x = 0; x <= width; x += 40) {
+            const y = height * 0.75 + 20 * Math.sin(x * 0.02);
+            gfx.lineTo(x, y);
+        }
+        gfx.lineTo(width, height);
+        gfx.lineTo(0, height);
+        gfx.closePath();
+        gfx.fillPath();
+
+        // Wavy hill 2
+        gfx.fillStyle(0x3a1d5a, 1);
+        gfx.beginPath();
+        gfx.moveTo(0, height * 0.85);
+        for (let x = 0; x <= width; x += 40) {
+            const y = height * 0.85 + 25 * Math.sin(x * 0.025 + 1);
+            gfx.lineTo(x, y);
+        }
+        gfx.lineTo(width, height);
+        gfx.lineTo(0, height);
+        gfx.closePath();
+        gfx.fillPath();
+
+        // Bigger floating letters and numbers
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for (let i = 0; i < 25; i++) {
+            const char = Phaser.Math.RND.pick(chars);
+            const x = Phaser.Math.Between(0, width);
+            const y = Phaser.Math.Between(0, height);
+            const floatText = this.add.text(x, y, char, {
+                fontFamily: '"Press Start 2P", cursive',
+                fontSize: "3rem", // made much larger
+                fill: "#ffffff33"
+            }).setAlpha(0.2);
+
+            this.tweens.add({
+                targets: floatText,
+                y: y + Phaser.Math.Between(10, 40),
+                duration: Phaser.Math.Between(3000, 5000),
+                yoyo: true,
+                repeat: -1,
+                ease: "Sine.easeInOut"
+            });
+        }
+
+        // Logo
+        const logo = this.add.image(width / 2, height * 0.28, "logo").setOrigin(0.5).setScale(0.6);
+        this.tweens.add({
+            targets: logo,
+            y: height * 0.27,
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: "Sine.easeInOut"
+        });
+
+        // Instructions
+        const baseStyle = {
             fontFamily: '"Press Start 2P", cursive',
-            fontSize: "3rem",
-            fill: "#fff"
+            fontSize: "1.5rem",
+            align: "center"
         };
 
-        // Delay rendering to ensure the font is loaded
-        this.time.delayedCall(100, () => {
-            this.add.text(width / 2, height * 0.2, "Albert's KeyQuest", fontStyle).setOrigin(0.5);
-            this.add.text(width / 2, height * 0.4, "Press 1 for Level 1", fontStyle).setOrigin(0.5);
-            this.add.text(width / 2, height * 0.5, "Press 2 for Level 2", fontStyle).setOrigin(0.5);
-            this.add.text(width / 2, height * 0.6, "Press 3 for Level 3", fontStyle).setOrigin(0.5);
+        const instructions = [
+            { text: "Press 1 for Level 1", color: "#FFD93D", key: "ONE", scene: "Level1Scene" },
+            { text: "Press 2 for Level 2", color: "#58D68D", key: "TWO", scene: "Level2Scene" },
+            { text: "Press 3 for Level 3", color: "#5DADE2", key: "THREE", scene: "Level3Scene" },
+        ];
+
+        instructions.forEach((item, i) => {
+            const style = { ...baseStyle, fill: item.color };
+            this.add.text(width / 2, height * (0.58 + i * 0.1), item.text, style).setOrigin(0.5);
+            this.input.keyboard.on(`keydown-${item.key}`, () => this.scene.start(item.scene));
         });
 
         addOptions(this);
-
-        this.input.keyboard.on("keydown-ONE", () => this.scene.start("Level1Scene"));
-        this.input.keyboard.on("keydown-TWO", () => this.scene.start("Level2Scene"));
-        this.input.keyboard.on("keydown-THREE", () => this.scene.start("Level3Scene"));
     }
 }
