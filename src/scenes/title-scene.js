@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import WebFont from 'webfontloader';
 import { addOptions } from "../options.js";
+import { BackgroundManager } from "../BackgroundManager.js";
 
 export default class TitleScene extends Phaser.Scene {
   constructor() {
@@ -25,41 +26,11 @@ export default class TitleScene extends Phaser.Scene {
       this.time.delayedCall(50, () => this.create(), [], this);
       return;
     }
+
+    const background = new BackgroundManager(this);
+    background.draw();
+
     const { width, height } = this.scale;
-
-    // Background layers
-    const gfx = this.add.graphics();
-
-    // Sky
-    gfx.fillStyle(0x552b84, 1);
-    gfx.fillRect(0, 0, width, height);
-
-    // Wavy hill 1
-    gfx.fillStyle(0x4d2676, 1);
-    gfx.beginPath();
-    gfx.moveTo(0, height * 0.75);
-    for (let x = 0; x <= width; x += 40) {
-      const y = height * 0.75 + 20 * Math.sin(x * 0.02);
-      gfx.lineTo(x, y);
-    }
-    gfx.lineTo(width, height);
-    gfx.lineTo(0, height);
-    gfx.closePath();
-    gfx.fillPath();
-
-    // Wavy hill 2
-    gfx.fillStyle(0x3a1d5a, 1);
-    gfx.beginPath();
-    gfx.moveTo(0, height * 0.85);
-    for (let x = 0; x <= width; x += 40) {
-      const y = height * 0.85 + 25 * Math.sin(x * 0.025 + 1);
-      gfx.lineTo(x, y);
-    }
-    gfx.lineTo(width, height);
-    gfx.lineTo(0, height);
-    gfx.closePath();
-    gfx.fillPath();
-
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     for (let i = 0; i < 50; i++) {
       const char = Phaser.Math.RND.pick(chars);

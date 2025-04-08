@@ -3,6 +3,7 @@ import { addOptions } from "../options.js";
 import { addBackToTitleButton, wait } from "../utils.js";
 import WordManager from "../WordManager.js";
 import audio from "../audio/AudioManager.js";
+import { BackgroundManager } from "../BackgroundManager.js";
 
 export default class Level1Scene extends Phaser.Scene {
   constructor() {
@@ -16,6 +17,10 @@ export default class Level1Scene extends Phaser.Scene {
 
   create() {
     audio.init(this);
+
+    const background = new BackgroundManager(this);
+    background.draw();
+
     const { width, height } = this.scale;
 
     addOptions(this);
