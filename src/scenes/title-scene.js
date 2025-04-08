@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import WebFont from 'webfontloader';
 import { addOptions } from "../options.js";
 
 export default class TitleScene extends Phaser.Scene {
@@ -7,10 +8,23 @@ export default class TitleScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("logo", "logo.png");
+      this.load.image("logo", "logo.png");
+      this.fontsReady = false;
+      WebFont.load({
+        google: {
+            families: ['Press Start 2P'],
+        },
+        active: () => {
+            this.fontsReady = true;
+        }
+      });
     }
 
     create() {
+        if (!this.fontsReady) {
+          this.time.delayedCall(50, () => this.create(), [], this);
+          return;
+        }
         const { width, height } = this.scale;
 
         // Background layers
