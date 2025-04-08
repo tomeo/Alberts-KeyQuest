@@ -46,22 +46,21 @@ export default class TitleScene extends Phaser.Scene {
         gfx.closePath();
         gfx.fillPath();
 
-        // Bigger floating letters and numbers
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        for (let i = 0; i < 25; i++) {
+        for (let i = 0; i < 50; i++) {
             const char = Phaser.Math.RND.pick(chars);
             const x = Phaser.Math.Between(0, width);
             const y = Phaser.Math.Between(0, height);
             const floatText = this.add.text(x, y, char, {
                 fontFamily: '"Press Start 2P", cursive',
-                fontSize: "3rem", // made much larger
+                fontSize: "4rem",
                 fill: "#ffffff33"
             }).setAlpha(0.2);
 
             this.tweens.add({
                 targets: floatText,
                 y: y + Phaser.Math.Between(10, 40),
-                duration: Phaser.Math.Between(3000, 5000),
+                duration: Phaser.Math.Between(3000, 4000),
                 yoyo: true,
                 repeat: -1,
                 ease: "Sine.easeInOut"
@@ -73,7 +72,7 @@ export default class TitleScene extends Phaser.Scene {
         this.tweens.add({
             targets: logo,
             y: height * 0.27,
-            duration: 1000,
+            duration: 500,
             yoyo: true,
             repeat: -1,
             ease: "Sine.easeInOut"
@@ -94,7 +93,11 @@ export default class TitleScene extends Phaser.Scene {
 
         instructions.forEach((item, i) => {
             const style = { ...baseStyle, fill: item.color };
-            this.add.text(width / 2, height * (0.58 + i * 0.1), item.text, style).setOrigin(0.5);
+            const txt = this.add.text(width / 2, height * (0.58 + i * 0.1), item.text, style)
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .on("pointerdown", () => this.scene.start(item.scene));
+
             this.input.keyboard.on(`keydown-${item.key}`, () => this.scene.start(item.scene));
         });
 
