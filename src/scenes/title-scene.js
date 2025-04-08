@@ -29,28 +29,9 @@ export default class TitleScene extends Phaser.Scene {
 
     const background = new BackgroundManager(this);
     background.draw();
+    background.drawBackgroundFloat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 
     const { width, height } = this.scale;
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    for (let i = 0; i < 50; i++) {
-      const char = Phaser.Math.RND.pick(chars);
-      const x = Phaser.Math.Between(0, width);
-      const y = Phaser.Math.Between(0, height);
-      const floatText = this.add.text(x, y, char, {
-        fontFamily: '"Press Start 2P", cursive',
-        fontSize: "4rem",
-        fill: "#ffffff33"
-      }).setAlpha(0.2);
-
-      this.tweens.add({
-        targets: floatText,
-        y: y + Phaser.Math.Between(10, 40),
-        duration: Phaser.Math.Between(3000, 4000),
-        yoyo: true,
-        repeat: -1,
-        ease: "Sine.easeInOut"
-      });
-    }
 
     // Logo
     const logo = this.add.image(width / 2, height * 0.28, "logo").setOrigin(0.5).setScale(0.6);

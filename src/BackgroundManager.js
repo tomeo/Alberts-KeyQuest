@@ -44,4 +44,37 @@ export class BackgroundManager {
     this.gfx.closePath();
     this.gfx.fillPath();
   }
+
+  drawBackgroundFloat(chars) {
+    this.floatingTexts = [];
+
+    for (let i = 0; i < 50; i++) {
+      const char = Phaser.Math.RND.pick(chars);
+      const x = Phaser.Math.Between(0, this.width);
+      const y = Phaser.Math.Between(0, this.height);
+      const floatText = this.scene.add.text(x, y, char, {
+        fontFamily: '"Press Start 2P", cursive',
+        fontSize: "4rem",
+        fill: "#ffffff33"
+      }).setAlpha(0.2);
+
+      this.scene.tweens.add({
+        targets: floatText,
+        y: y + Phaser.Math.Between(10, 40),
+        duration: Phaser.Math.Between(3000, 4000),
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut"
+      });
+
+      this.floatingTexts.push(floatText);
+    }
+  }
+
+  clearFloatingTexts() {
+    if (this.floatingTexts) {
+      this.floatingTexts.forEach(text => text.destroy());
+      this.floatingTexts = [];
+    }
+  }
 }

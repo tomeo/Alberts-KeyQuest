@@ -55,6 +55,8 @@ export default class Level1Scene extends Phaser.Scene {
       lastLetter = currentLetter;
 
       challengeText.setText(currentLetter);
+      background.clearFloatingTexts();
+      background.drawBackgroundFloat([currentLetter]);
     };
 
     const handleCorrectAnswer = () => {
